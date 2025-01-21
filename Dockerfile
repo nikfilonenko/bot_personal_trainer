@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV POETRY_VERSION=1.6.1
+ENV POETRY_VERSION=1.8.5
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s ~/.local/bin/poetry /usr/local/bin/poetry
 
