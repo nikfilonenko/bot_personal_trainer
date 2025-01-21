@@ -1,0 +1,73 @@
+name: app Weather Analysis CI/CD
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  quality-and-tests:
+    strategy:
+      matrix:
+        python-version: [ "3.13" ]
+        os: [ windows-latest, ubuntu-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Poetry (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+
+    - name: Install Poetry (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Add Poetry to PATH (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        $poetryPath = "$env:APPDATA\pypoetry\venv\Scripts"
+        echo "Adding Poetry to PATH: $poetryPath"
+        echo "$poetryPath" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Check Poetry installation
+      run: poetry --version
+
+    - name: Cache Poetry virtual environment
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: ${{ runner.os }}-poetry-${{ hashFiles('pyproject.toml') }}
+        restore-keys: ${{ runner.os }}-poetry-
+
+    - name: Install dependencies
+      run: poetry install --no-interaction --no-root
+
+    - name: Show Poetry environment info
+      run: poetry env info
+
+    - name: Dockerfile Linter
+      if: matrix.os == 'ubuntu-latest'
+      run: docker run --rm -i hadolint/hadolint < Dockerfile
+
+    - name: Run unit tests with pytest
+      timeout-minutes: 30
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: poetry run pytest tests/ -v

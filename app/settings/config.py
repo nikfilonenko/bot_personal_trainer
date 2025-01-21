@@ -1,16 +1,15 @@
-from pydantic.v1 import BaseSettings
-from pydantic_settings import SettingsConfigDict
+from pydantic_settings import SettingsConfigDict, BaseSettings
 from pydantic import SecretStr
 
+from app.utils.find_directory import find_directory_root
 
-__all__ = ["Settings"]
+
+__all__ = ["Settings", "config"]
 
 
 class Settings(BaseSettings):
-    def __init__(self):
-        token: SecretStr
-        model_config = SettingsConfigDict(env_file='')
-        super().__init__()
+    token: SecretStr
+    model_config = SettingsConfigDict(env_file=find_directory_root(file_name='.env'), env_file_encoding='utf-8')
 
 
 config = Settings()
