@@ -7,10 +7,13 @@ authors = ["Nikita Filonenko"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = ">=3.10,<3.11"
 aiogram = "^3.17.0"
 requests = "^2.32.3"
-pydantic = "^2.10.5"
+pydantic = {extras = ["all"], version = "^2.10.5"}
+pydantic-settings = "^2.7.1"
+sqlalchemy = "^2.0.37"
+googletrans = "3.1.0a0"
 
 
 [tool.poetry.group.test.dependencies]
