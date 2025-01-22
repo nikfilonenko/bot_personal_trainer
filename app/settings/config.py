@@ -8,8 +8,14 @@ __all__ = ["Settings", "config"]
 
 
 class Settings(BaseSettings):
-    token: SecretStr
-    model_config = SettingsConfigDict(env_file=find_directory_root(file_name='.env'), env_file_encoding='utf-8')
+    token_bot: SecretStr
+    api_key_open_weather: SecretStr
+    api_key_nutrition_training: SecretStr
+
+    model_config = SettingsConfigDict(
+        env_file=find_directory_root(file_name='.env'),
+        env_file_encoding='utf-8'
+    )
 
 
 config = Settings()
