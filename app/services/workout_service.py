@@ -1,23 +1,41 @@
 import requests
+from typing import Optional, List, Dict
+
 from app.settings.config import config
 from app.services.translation_service import TranslationService
 
 
+__all__ = ['WorkoutService']
+
+
 class WorkoutService:
     def __init__(self):
-        self.api_key = config.api_key_nutrition_training.get_secret_value()
-        self.translator = TranslationService()
+        self.translation_service = TranslationService()
 
-    async def get_calories_burned(self, activity: str, duration: int):
-        translated_activity = await self.translator.translate_to_english(activity)
+    def get_calories_burned(self, activity: str, duration: int) -> Optional[List[Dict[str, float]]]:
+        try:
+            translated_activity = self.translation_service.translate_to_english(activity)
 
-        url = f"https://api.api-ninjas.com/v1/caloriesburned?activity={translated_activity}&duration={duration}"
-        response = requests.get(url, headers={'X-Api-Key': self.api_key})
+            print(translated_activity)
 
-        if response.status_code == 200:
-            data = response.json()
-            if data:
-                translated_activity = await self.translator.translate_to_russian(data[0]['activity'])
-                data[0]['activity'] = translated_activity
-            return data
-        return None
+            response = requests.get(
+                f"https://api.api-ninjas.com/v1/caloriesburned?activity={translated_activity}",
+                headers={'X-Api-Key': config.api_key_nutrition_training.get_secret_value()}
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+
+                for item in data:
+                    calories_per_hour = item.get('calories_per_hour', 0)
+
+                    item['total_calories'] = (calories_per_hour / 60) * duration
+
+                    item['name'] = self.translation_service.translate_to_russian(item['name'])
+                return data
+
+            return None
+        except Exception as e:
+            print(f"Ошибка при запросе к API: {e}")
+            return None
+

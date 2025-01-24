@@ -1,21 +1,25 @@
 from googletrans import Translator
 
+
+__all__ = ['TranslationService']
+
+
 class TranslationService:
     def __init__(self):
         self.translator = Translator()
 
-    async def translate_to_russian(self, text: str) -> str:
+    def translate_to_english(self, text: str) -> str:
         try:
-            translation = await self.translator.translate(text, src='en', dest='ru')
-            return translation.text
+            translated = self.translator.translate(text, src='ru', dest='en')
+            return translated.text
         except Exception as e:
-            print(f"Ошибка перевода: {e}")
+            print(f"Ошибка перевода на английский: {e}")
             return text
 
-    async def translate_to_english(self, text: str) -> str:
+    def translate_to_russian(self, text: str) -> str:
         try:
-            translation = await self.translator.translate(text, src='ru', dest='en')
-            return translation.text
+            translated = self.translator.translate(text, src='en', dest='ru')
+            return translated.text
         except Exception as e:
-            print(f"Ошибка перевода: {e}")
+            print(f"Ошибка перевода на русский: {e}")
             return text

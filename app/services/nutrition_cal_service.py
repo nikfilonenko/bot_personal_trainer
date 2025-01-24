@@ -1,6 +1,6 @@
 import requests
-from app.settings.config import config
 from app.services.translation_service import TranslationService
+from typing import Optional, Dict
 
 
 __all__ = ["NutritionService"]
@@ -8,19 +8,28 @@ __all__ = ["NutritionService"]
 
 class NutritionService:
     def __init__(self):
-        self.api_key = config.api_key_nutrition_training.get_secret_value()
-        self.translator = TranslationService()
+        self.translation_service = TranslationService()
 
-    async def get_nutrition_info(self, query: str):
-        translated_query = await self.translator.translate_to_english(query)
+    async def get_nutrition_info(self, product_name: str) -> Optional[Dict[str, str | float]]:
+        translated_query = self.translation_service.translate_to_english(product_name)
 
-        url = f"https://api.api-ninjas.com/v1/nutrition?query={translated_query}"
-        response = requests.get(url, headers={'X-Api-Key': self.api_key})
+        url = f"https://world.openfoodfacts.org/cgi/search.pl?action=process&search_terms={translated_query}&json=true"
+        response = requests.get(url)
 
-        if response.status_code == 200:
-            data = response.json()
-            if data:
-                translated_name = await self.translator.translate_to_russian(data[0]['name'])
-                data[0]['name'] = translated_name
-            return data
-        return None
+        if response.status_code != 200:
+            print(f"Ошибка: {response.status_code}")
+            return None
+
+        data = response.json()
+        products = data.get('products', [])
+
+        if not products:
+            return None
+
+        first_product = products[0]
+        calories = first_product.get('nutriments', {}).get('energy-kcal_100g', 0)
+
+        return {
+            'name': product_name,
+            'calories': calories
+        }
