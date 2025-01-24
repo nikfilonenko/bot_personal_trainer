@@ -1,4 +1,5 @@
-![img.png](assets/img.png)
+# About the project ***`bot_personal_trainer`***
+
 
 ```python
 2025-01-21 15:13:28,737 - User 990510477 issued command: /start
