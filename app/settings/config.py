@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     api_key_nutrition_training: SecretStr
 
     model_config = SettingsConfigDict(
-        env_file=find_directory_root(file_name='.env'),
+        env_file='.env',
         env_file_encoding='utf-8'
     )
 
