@@ -1,6 +1,6 @@
 ![img.png](assets/img.png)
 
-```json
+```python
 2025-01-21 15:13:28,737 - User 990510477 issued command: /start
 2025-01-21 15:13:28,921 - Update id=466719252 is handled. Duration 187 ms by bot id=8096854151
 2025-01-21 15:13:38,296 - User 990510477 issued command: /about_bot
