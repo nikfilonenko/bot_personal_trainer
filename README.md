@@ -10,7 +10,7 @@
 2025-01-21 15:13:50,844 - Update id=466719254 is handled. Duration 78 ms by bot id=8096854151
 ```
 
-
+![img.png](assets/img.png)
 
 https://github.com/user-attachments/assets/ab14d42f-e8af-4232-b584-68c7cd442ea1
 
