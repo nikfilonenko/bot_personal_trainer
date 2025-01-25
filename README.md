@@ -116,12 +116,12 @@ $\text{+ Уровень активности добавляет калории (
 
 ### Технологии и архитектура <a name="03"></a>
 
-#### 1. Используемые технологии <a name="031"></a>
+## 1. Используемые технологии <a name="031"></a>
 
 - **Язык программирования:** Python
 - **Фреймворк для бота:** aiogram
 - **База данных:** SQLite (через SQLAlchemy)
-- **API:** OpenWeatherMap, Nutrition API
+- **API:** `OpenWeatherMap API`, `Open Food Facts API`, `Calories Burned API ninjas`
 - **Логирование:** Middleware для логирования апдейтов
 - **Деплой:** Docker, Render.com
 
